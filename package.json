@@ -12,7 +12,14 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "nuxt": "^3.8.0",
+    "nuxt-icon": "^0.6.0",
     "vue": "^3.3.7",
     "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.1",
+    "json-server": "^0.17.4",
+    "pinia": "^2.1.7",
+    "sass": "^1.69.5"
   }
 }

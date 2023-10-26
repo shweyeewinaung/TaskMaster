@@ -1,0 +1,203 @@
+@import "./colors.scss";
+@import "./breakpoints.scss";
+
+.taskContainer{
+    display:inline-block;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.addTask {
+    width: 35%;
+    border:1px solid $white;
+    border-radius: 20px;
+    display: inline-block;
+
+    &__innerBox{
+        position:relative;
+        padding-bottom:20px;
+    }
+    
+    label{
+        width:100%;
+        display:inline-block;
+        font-size: 1.06rem;
+        margin-bottom: 8px;
+    }
+
+    input{
+        width:85%;
+        display:inline-block;
+        padding:12px;
+        font-size: 1.06rem;
+        border-radius: 40px;
+        border: 0;
+        box-shadow:2px 2px 2px rgba($white, .3);
+        box-sizing: border-box;
+    }
+    
+
+    button{
+        margin-top:16px;
+        font-size:1.1rem;
+        border-radius:20px;
+        padding:8px 16px;
+        font-family: 'Nunito', sans-serif;
+        box-shadow:2px 2px 2px rgba($white, .3);
+        cursor:pointer;
+        transition: .2s background-color ease-in-out;
+    }
+
+    &__submit{
+        background-color:$yellow;
+        color:$black;
+        border: 1px solid $yellow;
+        margin-right:16px;
+
+        &:hover{
+            background-color:transparent ;
+            color:$yellow ;
+        }
+    }
+
+    &__cancel{
+        background-color:transparent;
+        color:$white;
+        border: 1px solid $white;
+
+        &:hover{
+            background-color:$white;
+            color:$black;
+        }
+    }
+
+    &__error{
+        color:$red;
+        position: absolute;
+        bottom:-16px;
+        left:0;
+        width:100%;
+        font-size:0.9rem;
+    }
+
+}
+
+.taskList{
+    width: 50%;
+    margin-left:auto;
+    padding-top:0;
+    display: inline-block;
+
+    &__listItem{
+        list-style: none;
+        padding: 0 15px;
+        max-height: 47vh;
+        overflow-y: auto;
+
+       &__skeleton{
+        width: 100%;
+        height: 50px;
+        box-sizing: border-box;
+       }
+
+        &::-webkit-scrollbar {
+            width: 2px;
+        }
+           
+        &::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+          }
+           
+        &::-webkit-scrollbar-thumb {
+            background-color: $white;
+            outline: 1px solid $gray;
+            border-radius:5px;
+        }
+
+        li{
+            background-color: $gray;
+            color: $black;
+            padding:0.5rem 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 40px;
+            box-shadow:2px 2px 2px rgba($white, .2);
+            display:flex;
+            align-items: center;
+            transition: transform 0.3s ease-in-out;
+
+            &.selected{
+                opacity:.3;
+                cursor: none;
+            }
+
+            &:not(.selected):hover{
+                transform: scale(1.03);
+            }
+        }
+
+        &__name{
+            width:70%;
+        }
+
+        &__tool{
+            margin-left: auto;
+            display:flex;
+
+            button{
+                border-radius:100%;
+                background-color: transparent;
+                cursor: pointer;
+                border:0;
+                width:35px;
+                height:35px;
+            }
+
+            button:not(:disabled):hover{
+                background-color:$black;
+                color:$white;
+            }
+
+            svg{
+                font-size:1.7rem;
+            }
+        }
+    }
+
+    &__totalText{
+        margin-top:30px;
+        display:inline-block;
+        text-align:right;
+        width:100%;
+    }
+}
+
+@media (max-width: $breakpoint-lg) {
+    .addTask{
+        width:45%;
+    }
+    .taskContainer{
+        padding: 2rem 1rem;
+    }
+}
+
+@media (max-width: $breakpoint-md) {
+
+    .addTask{
+        width:100%;
+
+        input{
+            width:100%;
+        }
+    }
+
+    .taskList{
+        width:100%;
+        margin:40px 0;
+
+        &__listItem{
+            max-height:fit-content;
+            overflow-y: visible;
+            padding: 0;
+        }
+    }
+}
