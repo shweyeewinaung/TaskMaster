@@ -3,7 +3,6 @@
 
 .taskContainer{
     display:inline-block;
-    padding: 2rem;
     box-sizing: border-box;
 }
 
@@ -12,6 +11,8 @@
     border:1px solid $white;
     border-radius: 20px;
     display: inline-block;
+    min-height: 470px;
+    padding: 2rem;
 
     &__innerBox{
         position:relative;
@@ -85,8 +86,8 @@
 .taskList{
     width: 50%;
     margin-left:auto;
-    padding-top:0;
     display: inline-block;
+    padding: 0 2rem 2rem;
 
     &__listItem{
         list-style: none;
@@ -174,9 +175,10 @@
 @media (max-width: $breakpoint-lg) {
     .addTask{
         width:45%;
-    }
-    .taskContainer{
         padding: 2rem 1rem;
+    }
+    .taskList{
+        padding: 0 2rem 1rem;
     }
 }
 
@@ -184,6 +186,7 @@
 
     .addTask{
         width:100%;
+        min-height: auto;
 
         input{
             width:100%;

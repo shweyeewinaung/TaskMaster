@@ -1,5 +1,8 @@
 import { defineStore } from "pinia";
 import type { TaskInterface } from "./type";
+import { mande } from 'mande'
+
+const api = mande('http://localhost:3001/tasks')
 
 export const useTaskStore = defineStore('myStore', {
   state: () => ({
@@ -21,9 +24,7 @@ export const useTaskStore = defineStore('myStore', {
     async getAllTasks() {
         this.isLoading = true;
         try {
-            const response = await $fetch<TaskInterface[]>('http://localhost:3001/tasks', {
-                method: 'GET'
-            }); 
+            const response : TaskInterface[] = await api.get();
 
             if(response){
                 this.tasks = response
@@ -40,11 +41,7 @@ export const useTaskStore = defineStore('myStore', {
     async createTask(newTask : TaskInterface) {
         this.isLoading = true;
         try{
-            await $fetch(`http://localhost:3001/tasks/`, {
-                method: 'POST',
-                body: newTask
-            })
-
+            await api.post(newTask);
             await this.getAllTasks();
 
         } catch (error){
@@ -58,13 +55,10 @@ export const useTaskStore = defineStore('myStore', {
     async updateTask(updatedTask : TaskInterface) {
         this.isLoading = true;
         try{
-            await $fetch(`http://localhost:3001/tasks/${updatedTask.id}`, {
-                method: 'PUT',
-                body: updatedTask
-            });
+            await api.put(updatedTask.id, {"name": updatedTask.name});
 
-            this.updatingTaskData = null;
             await this.getAllTasks();
+            this.updatingTaskData = null;
 
         } catch (error){
             console.error('Error updating task:', error);
@@ -78,10 +72,7 @@ export const useTaskStore = defineStore('myStore', {
     async deleteTask(id : number) {
         this.isLoading = true;
         try{
-            await $fetch(`http://localhost:3001/tasks/${id}`, {
-                method: 'DELETE'
-            })
-
+            await api.delete(id);
             await this.getAllTasks();
 
         } catch (error){

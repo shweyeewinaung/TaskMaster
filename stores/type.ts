@@ -1,4 +1,4 @@
 export interface TaskInterface {
-    id: number
+    id: string
     name: string
 }

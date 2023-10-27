@@ -1,7 +1,7 @@
 <template>
   <form class="addTask taskContainer" @submit="onSubmit">
     <section class="addTask__innerBox">
-      <label for="taskInput">
+      <label for="taskInput" data-test="form-label">
           {{ updatingTaskData ? 'Update Task' : 'Create Your New Task' }}
       </label>
       <input 
@@ -10,10 +10,10 @@
         v-model="taskName"
         @input="clearError"
       />
-      <p v-if="showError" class="addTask__error">Please enter a task name!</p>
+      <p v-show="showError" class="addTask__error" data-test="form-error">Please enter a task name!</p>
     </section>
 
-    <button type="submit" class="addTask__submit">
+    <button type="submit" class="addTask__submit" data-test="form-submit">
       {{ updatingTaskData ? 'Update Now' : 'Create Now' }}
     </button>
 
@@ -22,6 +22,7 @@
       v-if="updatingTaskData" 
       @click="setUpdatingTaskData(null); updateTaskName('');"
       class="addTask__cancel"
+      data-test="update-cancel"
     >
         Not Now
     </button>
@@ -30,10 +31,10 @@
 
 <script lang="ts" setup>
 
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
   import { storeToRefs } from 'pinia';
-  import { watch } from 'vue';
   import { useTaskStore } from '@/stores/task';
+  import { v4 as uuidv4 } from 'uuid';
 
   const store = useTaskStore();
   const { createTask, updateTask } = store;
@@ -53,9 +54,7 @@
   })
 
   function clearError() {
-    if (!showError.value) {
-      showError.value = false;
-    }
+    showError.value = false;
   }
 
   function onSubmit(e : Event) {
@@ -66,9 +65,7 @@
       showError.value = false;
 
       if(!updatingTaskData?.value?.id){
-        const lastTask = tasks.value[tasks.value.length - 1];
-        const lastId = lastTask ? lastTask.id : 0; // If there are no 
-        const newId = lastId + 1;
+        const newId = uuidv4();
 
         let newTask : TaskInterface = {
           name: inputValue,

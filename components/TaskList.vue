@@ -4,9 +4,7 @@
     <ol class="taskList__listItem">
         <li v-if="!isLoading && tasks.length === 0">No tasks found.</li>
 
-        <li v-if="isLoading" class="skeleton taskList__listItem__skeleton"></li>
-        <li v-if="isLoading" class="skeleton taskList__listItem__skeleton"></li>
-        <li v-if="isLoading" class="skeleton taskList__listItem__skeleton"></li>
+        <LoadingTask v-if="isLoading"/>
 
         <li v-else v-for="task in reversedTasks" :key="task.id" :class="`${(updatingTaskData && task.id === updatingTaskData?.id) ? 'selected' : ''}`">
             <span class="taskList__listItem__name">{{ task.name }}</span>
