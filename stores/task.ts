@@ -54,19 +54,18 @@ export const useTaskStore = defineStore('myStore', {
 
     async updateTask(updatedTask : TaskInterface) {
         this.isLoading = true;
-        try{
-            await api.put(updatedTask.id, {"name": updatedTask.name});
-
+        
+        await api.put(updatedTask.id, {"name": updatedTask.name})
+        .then(async()=> {
             await this.getAllTasks();
             this.updatingTaskData = null;
-
-        } catch (error){
+        })
+        .catch((error) => {
             console.error('Error updating task:', error);
             throw error;
-
-        } finally {
+        }).finally(()=>{
             this.isLoading = false; 
-        }
+        });
     },
 
     async deleteTask(id : number) {

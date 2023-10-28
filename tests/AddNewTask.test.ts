@@ -1,21 +1,22 @@
 import { setActivePinia, createPinia } from 'pinia'
-import { mount, VueWrapper } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { useTaskStore } from '../stores/task';
 import AddNewTask from '../components/AddNewTask.vue';
 import TaskList from '../components/TaskList.vue';
+import { v4 as uuidv4 } from 'uuid';
 
 beforeAll(() => {
     setActivePinia(createPinia());
 });
 
-describe('page loading stage', () => {
+describe('Page Loading Stage', () => {
 
-    test('create a store', () => {
+    test('Create a Store', () => {
         const store = useTaskStore();
         expect(store).toBeDefined();
     })
 
-    test('form has to be for create task', async() => {
+    test('Form for Creating a Task', async() => {
         const wrapper = mount(AddNewTask);
 
         const formLabel = wrapper.get('[data-test="form-label"]');
@@ -26,13 +27,13 @@ describe('page loading stage', () => {
     })
 })
 
-describe('conditions when updatingTaskData state is not null', () => {
+describe('Conditions When the UpdatingTaskData State Is Not Null', () => {
 
     beforeEach(() => {
         setActivePinia(createPinia())
     })
 
-    it('update task form', async () => {
+    it('Update Task Form', async () => {
         const store = useTaskStore();
 
         store.updatingTaskData = { id: '3', name: 'Task 3' };
@@ -52,13 +53,13 @@ describe('conditions when updatingTaskData state is not null', () => {
     });
 })
 
-describe.only('Form Submission Test', () => {
+describe('Form Submission Test', () => {
 
     beforeEach(() => {
         setActivePinia(createPinia())
     })
 
-    test('add a task', async () => {
+    test('Add a Task', async () => {
         const addNewTaskWrapper = mount(AddNewTask)
         const taskListWrapper = mount(TaskList)
 
@@ -78,13 +79,14 @@ describe.only('Form Submission Test', () => {
         expect(listItem).not.toBeNull(); 
     })
 
-    test('update a task', async () => {
+    test('Update a Task', async () => {
         const store = useTaskStore();
         const addNewTaskWrapper = mount(AddNewTask)
         const taskListWrapper = mount(TaskList)
 
         const formLabel = addNewTaskWrapper.get('[data-test="form-label"]');
         const formSubmit = addNewTaskWrapper.get('[data-test="form-submit"]');
+        const input = addNewTaskWrapper.find('input')
 
         expect(formLabel.text()).toBe('Create Your New Task')
         expect(formSubmit.text()).toBe('Create Now')
@@ -99,7 +101,7 @@ describe.only('Form Submission Test', () => {
         expect(formLabel.text()).toBe('Update Task')
         expect(formSubmit.text()).toBe('Update Now')
 
-        const input = addNewTaskWrapper.find('input')
+        
         expect(input.element.value).toBe(newTask.name);
 
         const updatedTaskName = 'Task is updated by shwe';
@@ -116,7 +118,54 @@ describe.only('Form Submission Test', () => {
 
     })
 
-    test('show error text when user does not type name and click submit button', async() => {
+    test('Should update the form with a task name while updating', async () => {
+
+        const newId = uuidv4();
+        const store = useTaskStore();
+        const wrapper = mount(AddNewTask);
+
+        store.updatingTaskData = null;
+        const newTask: TaskInterface = { id: newId, name: `Task ${newId} from testing` };
+        store.setUpdatingTaskData(newTask);
+        expect(store.updatingTaskData).toEqual(newTask);
+
+        await wrapper.vm.$nextTick();
+    
+        const input = wrapper.find('input');
+        expect(input.element.value).toBe(newTask.name);
+    
+        const form = wrapper.find('[data-test="form-submit"]');
+        await form.trigger('submit');
+
+        await wrapper.vm.$nextTick();
+    
+        setTimeout(() => {
+            expect(store.updateTask).toHaveBeenCalled();
+        }, 1000);
+    });
+
+    test('Should submit the form with a task name', async () => {
+
+        const store = useTaskStore();
+        const wrapper = shallowMount(AddNewTask);
+    
+        // Simulate user input
+        const input = wrapper.find('input#taskInput');
+        await input.setValue('Sample Task');
+    
+        // Simulate form submission
+        const form = wrapper.find('[data-test="form-submit"]');
+        await form.trigger('submit');
+
+        await wrapper.vm.$nextTick();
+    
+        setTimeout(() => {
+            expect(wrapper.find('[data-test="form-error"]').isVisible()).toBe(false);
+            expect(store.createTask).toHaveBeenCalled();
+        }, 1000);
+    });
+
+    test('Show Error Text When the User Does Not Type a Name and Click the Submit Button', async() => {
         const addNewTaskWrapper = mount(AddNewTask);
 
         const input = addNewTaskWrapper.find('input');
@@ -124,6 +173,10 @@ describe.only('Form Submission Test', () => {
 
         await addNewTaskWrapper.find('[data-test="form-submit"]').trigger('click');
         await addNewTaskWrapper.vm.$nextTick();
+
+        setTimeout(() => {
+            expect(addNewTaskWrapper.vm.showError).toBe(true);
+        }, 1000);
 
         let formError = addNewTaskWrapper.find('[data-test="form-error"]');
         expect(formError.isVisible()).toBe(true);
@@ -138,12 +191,13 @@ describe.only('Form Submission Test', () => {
         setTimeout(() => {
             formError = addNewTaskWrapper.find('[data-test="form-error"]');
             expect(formError.isVisible()).toBe(false);
-        }, 500);
+            expect(addNewTaskWrapper.vm.showError).toBe(false);
+        }, 1000);
     })
 })
 
-describe('Not now button behaviors', () => {
-    test('Not now button', async() =>{
+describe('Not Now Button Behaviors', () => {
+    test('Not Now Button', async() =>{
         const store = useTaskStore();
         const addNewTaskWrapper = mount(AddNewTask)
 

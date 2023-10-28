@@ -1,75 +1,45 @@
-# Nuxt 3 Minimal Starter
+# Task Master By Shwe
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Description
 
-## Setup
+Users can create, view, update, and delete tasks. While updating a task, the system prevents concurrent actions. Additionally, the total task count is displayed under the task list.
 
-Make sure to install the dependencies:
+## Requirements
 
-```bash
-# npm
-npm install
+- Node.js (v19.6.1 - recommended version)
+- NPM (9.4.0 - recommended version)
 
-# pnpm
-pnpm install
+## Installation
 
-# yarn
-yarn install
+1. Clone the repository to your local machine.
 
-# bun
-bun install
-```
+   ```bash
+   git clone git@github.com:shweyeewinaung/TaskMaster.git
+   ```
 
-## Development Server
+2. Navigate to the project folder.
 
-Start the development server on `http://localhost:3000`:
+   ```bash
+   cd TaskMaster
+   ```
 
-```bash
-# npm
-npm run dev
+3. Install the dependencies.
 
-# pnpm
-pnpm run dev
+   ```bash
+   using NPM
+   npm install
+   ```
 
-# yarn
-yarn dev
+4. Running the json-server
+   Run the following command to start the development server on `http://localhost:3001`:
 
-# bun
-bun run dev
-```
+   ```bash
+   json-server --watch db.json --port 3001
+   ```
 
-## Production
+5. Running the Application
+   Run the following command to start the development server on `http://localhost:3000`:
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+   ```bash
+   npm run dev
+   ```

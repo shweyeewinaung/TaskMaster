@@ -1,18 +1,19 @@
 <template>
   <section class="taskList taskContainer">
     <h2 class="mt-0">Master Task List</h2>
+    
     <ol class="taskList__listItem">
         <li v-if="!isLoading && tasks.length === 0">No tasks found.</li>
 
-        <LoadingTask v-if="isLoading"/>
+        <LoadingTask v-if="isLoading" data-test="task-loading"/>
 
-        <li v-else v-for="task in reversedTasks" :key="task.id" :class="`${(updatingTaskData && task.id === updatingTaskData?.id) ? 'selected' : ''}`">
+        <li v-else v-for="task in reversedTasks" :key="task.id" :class="`${(updatingTaskData && task.id === updatingTaskData?.id) ? 'selected' : ''}`" data-test="task-li">
             <span class="taskList__listItem__name">{{ task.name }}</span>
             <span class="taskList__listItem__tool">
-                <button @click="setUpdatingTaskData(task)" :disabled="updatingTaskData">
+                <button @click="setUpdatingTaskData(task)" :disabled="updatingTaskData" data-test="button-edit">
                     <Icon name="ic:baseline-edit-note"/>
                 </button>
-                <button @click="onDeleteTask(task.id)" :disabled="updatingTaskData">
+                <button @click="onDeleteTask(task.id)" :disabled="updatingTaskData" data-test="button-delete">
                     <Icon name="material-symbols:delete-outline" />
                 </button>
             </span>

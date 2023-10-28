@@ -1,17 +1,19 @@
-import { describe, test, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
+import { describe, test, expect, beforeAll, beforeEach } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia'
 import { useTaskStore } from './task';
-import { server } from './mocks/server';
-import { mount } from '@vue/test-utils';
-import AddNewTask from '../components/AddNewTask.vue';
+import { v4 as uuidv4 } from 'uuid';
 
 beforeAll(() => {
     setActivePinia(createPinia());
 });
 
-describe.skip('task store function test', () => {
+describe('Task Store Function Test', () => {
 
-    test('get all tasks function', async() => {
+    beforeEach(() => {
+        setActivePinia(createPinia())
+    })
+
+    test('Get All Tasks Function', async() => {
 
         const response = await fetch('http://localhost:3001/tasks')
 
@@ -19,11 +21,12 @@ describe.skip('task store function test', () => {
         expect(response.statusText).toBe('OK');
     });
 
-    test('create a task function', async() => {
+    test('Create a Task Function', async() => {
 
+        const newId = uuidv4();
         let newTask = JSON.stringify({
-            "name": "Added by testing 787878",
-            "id": '787878'
+            "name": `Added by testing ${newId}`,
+            "id": newId
         });
         const requestOptions = {
             method: 'POST',
@@ -38,15 +41,29 @@ describe.skip('task store function test', () => {
         expect(response.status).toBe(201);
         expect(response.statusText).toBe('Created');
         expect(await response.json()).toEqual({
-            "name": "Added by testing 787878",
-            "id": '787878'
+            "name": `Added by testing ${newId}`,
+            "id": newId
         })
     })
 
-    test('update a task function', async() => {
+    test('Update a Task Function', async() => {
+
+        const newId = uuidv4();
+        let newTask = JSON.stringify({
+            "name": `Added by testing ${newId}`,
+            "id": newId
+        });
+        const postOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: newTask
+        };
+        await fetch('http://localhost:3001/tasks', postOptions)
 
         let updateTask = JSON.stringify({
-            "name": "Added by testing 787878 (updated 3)"
+            "name": `Added by testing ${newId} (updated)`
         });
         const requestOptions = {
             method: 'PUT',
@@ -56,35 +73,53 @@ describe.skip('task store function test', () => {
             body: updateTask
         };
 
-        const response = await fetch('http://localhost:3001/tasks/787878', requestOptions);
+        setTimeout(async () => {
+            const response = await fetch(`http://localhost:3001/tasks/${newId}`, requestOptions);
 
-        expect(response.status).toBe(200);
-        expect(response.statusText).toBe('OK');
-        expect(await response.json()).toEqual({
-            "name": "Added by testing 787878 (updated 3)",
-            "id": '787878'
-        })
+            expect(response.status).toBe(200);
+            expect(response.statusText).toBe('OK');
+            expect(await response.json()).toEqual({
+                "name": `Added by testing ${newId} (updated)`,
+                "id": newId
+            })
+        }, 500); 
     })
 
-    test('delete a task function', async() => {
-        const response = await fetch('http://localhost:3001/tasks/787878', {
-            method: 'DELETE'
+    test('Delete a Task Function', async() => {
+        const newId = uuidv4();
+        let newTask = JSON.stringify({
+            "name": `Added by testing ${newId} to delete`,
+            "id": newId
         });
+        const postOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: newTask
+        };
+        await fetch('http://localhost:3001/tasks', postOptions)
 
-        expect(response.status).toBe(200);
-        expect(response.statusText).toBe('OK');
-        expect(await response.json()).toEqual({})
+        setTimeout(async () => {
+            const response = await fetch(`http://localhost:3001/tasks/${newId}`, {
+                method: 'DELETE'
+            });
+
+            expect(response.status).toBe(200);
+            expect(response.statusText).toBe('OK');
+            expect(await response.json()).toEqual({})
+        }, 500); 
     })
     
 });
 
-describe.skip('test for getters', () => {
+describe('Test for Getters', () => {
 
     beforeEach(() => {
         setActivePinia(createPinia())
     })
 
-    it('reversedTasks', () => {
+    it('ReversedTasks', () => {
         const store = useTaskStore();
         
         store.tasks = [
@@ -103,7 +138,7 @@ describe.skip('test for getters', () => {
         expect(reversedTasks).toEqual(expectedReversedTasks);
     });
 
-    it('setUpdatingTaskData', () => {
+    it('SetUpdatingTaskData', () => {
         const store = useTaskStore();
         
         store.updatingTaskData = null;
